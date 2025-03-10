@@ -65,7 +65,7 @@ export async function searchMovies(query: string) {
     return movie
   }
   
-  export async function addVote(movieId: number) {
+  export async function addVote(movieId: string) {
     const payload = await getPayload({ config: configPromise })
   
     const movie = await payload.findByID({

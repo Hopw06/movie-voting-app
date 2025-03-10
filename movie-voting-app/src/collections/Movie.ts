@@ -1,3 +1,4 @@
+import { List } from '@/endpoints/movie/list'
 import type { CollectionConfig, FieldHook } from 'payload'
 import { tr } from 'payload/i18n/tr'
 
@@ -29,7 +30,9 @@ export const Movie: CollectionConfig = {
         useAsTitle: 'name'
     },
     access: {
-        create: () => true,
+        create: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
+        delete: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
+        update: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
         read: () => true
     },
     fields: [
@@ -47,6 +50,9 @@ export const Movie: CollectionConfig = {
             name: 'votes',
             type: 'number',
             required: true,
+            access: {
+                update: () => true
+            }
         },
         {
             name: 'poster',
@@ -85,7 +91,8 @@ export const Movie: CollectionConfig = {
             hooks: {
                 beforeValidate: [formatSlug('name')]
             }
-        }
-    ]
+        },
+    ],
+    endpoints: [List]
 }
   

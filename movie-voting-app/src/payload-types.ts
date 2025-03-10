@@ -69,6 +69,7 @@ export interface Config {
     users: User;
     media: Media;
     movie: Movie;
+    session: Session;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -78,6 +79,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     movie: MovieSelect<false> | MovieSelect<true>;
+    session: SessionSelect<false> | SessionSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -120,6 +122,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  role: 'admin' | 'editor' | 'user';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -172,6 +175,20 @@ export interface Movie {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "session".
+ */
+export interface Session {
+  id: string;
+  refreshToken?: string | null;
+  device?: string | null;
+  ip?: string | null;
+  createdAt: string;
+  user: string | User;
+  status: 'inactive' | 'active';
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -188,6 +205,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'movie';
         value: string | Movie;
+      } | null)
+    | ({
+        relationTo: 'session';
+        value: string | Session;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -236,6 +257,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -284,6 +306,19 @@ export interface MovieSelect<T extends boolean = true> {
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "session_select".
+ */
+export interface SessionSelect<T extends boolean = true> {
+  refreshToken?: T;
+  device?: T;
+  ip?: T;
+  createdAt?: T;
+  user?: T;
+  status?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

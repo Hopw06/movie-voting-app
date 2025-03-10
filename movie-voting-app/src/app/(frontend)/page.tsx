@@ -1,22 +1,27 @@
-import React from 'react'
-
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+'use client'
+import React, { useEffect, useState } from 'react'
 
 import MovieCards from './MovieCards'
+import Header from './Header'
+import { useApi } from '@/components/api'
+import { Movie } from '@/payload-types'
 
-const Page = async () => {
-  const payload = await getPayload({ config: configPromise })
+const Page = () => {
+  const api = useApi()
+  const [movies, setMovies] = useState<Movie[]>([])
 
-  const movies = await payload.find({
-    collection: 'movie',
-    sort: '-votes',
-  })
+  useEffect(() => {
+    api.post('/movie/list').then((resp) => {
+      console.log(resp.data)
+      setMovies(resp.data.movies)
+    })
+  }, [])
 
   return (
     <>
       <main className="mt-5">
-        <MovieCards movies={movies.docs} />
+        <Header />
+        <MovieCards movies={movies} />
       </main>
     </>
   )
